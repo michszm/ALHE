@@ -1,6 +1,10 @@
 from raport_generator import RaportGenerator
+from structures import NetworkTree, LineSegment
+import random
 
 class Heuristics:
+
+    population = []
 
     def __init__(self, cities_coord, powers_coord, pop_quantity, iter_quantity, cost_traction, cost_power_lines):
         self.cities_coord = cities_coord
@@ -9,7 +13,7 @@ class Heuristics:
         self.iter_quantity = iter_quantity
         self.cost_traction = cost_traction
         self.cost_power_lines = cost_power_lines
-        self.generare_initial_population()
+        self.generate_initial_population()
         self.raport_generator = RaportGenerator()
 
 
@@ -28,8 +32,35 @@ class Heuristics:
         print "Iteration"
         #generate iteration raport
 
-    def generare_initial_population(self):
-        print "Init"
+    def generate_initial_population(self):
+
+        # generuj populacje poczatkowa
+        for i in range(self.pop_quantity):
+
+            individual = NetworkTree()
+
+            usedSet = set()
+            unusedSet = set()
+            for point in self.cities_coord:
+                unusedSet.add(point)
+
+            while len(unusedSet) != 0:
+
+                point = random.sample(unusedSet, 1)
+                point = point.pop(0)
+                unusedSet.remove(point)
+
+                if len(usedSet) == 0:
+                    usedSet.add(point)
+
+                else:
+                    usedPoint = random.sample(usedSet,1)
+                    usedPoint = usedPoint.pop(0)
+                    individual.addNewSegment(LineSegment(point, usedPoint))
+                    usedSet.add(point)
+
+            self.population.append(individual)
+
 
     def selection(self):
         print "Selection"
