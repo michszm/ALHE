@@ -56,7 +56,7 @@ class Heuristics:
                 else:
                     usedPoint = random.sample(usedSet,1)
                     usedPoint = usedPoint.pop(0)
-                    individual.addNewSegment(LineSegment(point, usedPoint))
+                    individual.add_new_segment(LineSegment(point, usedPoint))
                     usedSet.add(point)
 
             self.population.append(individual)
