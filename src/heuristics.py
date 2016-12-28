@@ -5,6 +5,7 @@ import random
 class Heuristics:
 
     population = []
+    is_population_sorted = False
 
     def __init__(self, cities_coord, powers_coord, pop_quantity, iter_quantity, cost_traction, cost_power_lines):
         self.cities_coord = cities_coord
@@ -73,3 +74,12 @@ class Heuristics:
 
     def succession(self):
         print "Succession"
+
+    def best_individual(self, rank=0):
+        if rank >= len(self.population):
+            rank = len(self.population) - 1
+        if self.is_population_sorted is False:
+            self.population.sort(key=lambda individual: individual.goal_func,
+                                 reverse=True)
+            self.is_population_sorted = True
+        return self.population[rank]
