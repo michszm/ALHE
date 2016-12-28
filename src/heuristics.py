@@ -1,5 +1,6 @@
 from raport_generator import RaportGenerator
 from structures import NetworkTree, LineSegment
+from utils import nrst_pt_on_seg
 import random
 
 class Heuristics:
@@ -7,9 +8,9 @@ class Heuristics:
     population = []
     is_population_sorted = False
 
-    def __init__(self, cities_coord, powers_coord, pop_quantity, iter_quantity, cost_traction, cost_power_lines):
-        self.cities_coord = cities_coord
-        self.powers_coord = powers_coord
+    def __init__(self, cities_coords, powers_coords, pop_quantity, iter_quantity, cost_traction, cost_power_lines):
+        self.cities_coords = cities_coords
+        self.powers_coords = powers_coords
         self.pop_quantity = pop_quantity
         self.iter_quantity = iter_quantity
         self.cost_traction = cost_traction
@@ -42,7 +43,7 @@ class Heuristics:
 
             usedSet = set()
             unusedSet = set()
-            for point in self.cities_coord:
+            for point in self.cities_coords:
                 unusedSet.add(point)
 
             while len(unusedSet) != 0:
@@ -59,6 +60,27 @@ class Heuristics:
                     usedPoint = usedPoint.pop(0)
                     individual.add_new_segment(LineSegment(point, usedPoint))
                     usedSet.add(point)
+
+            for coord in self.powers_coords:
+                min_dist = float("inf")
+                min_dist_point = None
+                for seg in individual.segments:
+                    if seg.conn_to_powerstation is False:
+                        pt, dist = nrst_pt_on_seg(coord + (0,),
+                                                  seg.point1 + (0,),
+                                                  seg.point2 + (0,))
+                        if dist < min_dist:
+                            min_dist = dist
+                            min_dist_point = (pt[0], pt[1])
+                if min_dist_point is not None:
+                    powers_seg = LineSegment(min_dist_point, coord)
+                    powers_seg.conn_to_powerstation = True
+                    powers_seg.powers_line_segment_len = min_dist
+                    powers_seg.powers_coord = coord
+                    individual.add_new_segment(powers_seg)
+
+            individual.count_goal_func(self.cost_traction,
+                                       self.cost_power_lines)
 
             self.population.append(individual)
 
