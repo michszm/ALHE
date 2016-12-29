@@ -9,11 +9,12 @@ class Heuristics:
     population = []
     is_population_sorted = False
 
-    def __init__(self, cities_coords, powers_coords, pop_quantity, sel_size, mut_prob, iter_quantity, cost_traction, cost_power_lines):
+    def __init__(self, cities_coords, powers_coords, pop_quantity, sel_size, elitism, mut_prob, iter_quantity, cost_traction, cost_power_lines):
         self.cities_coords = cities_coords
         self.powers_coords = powers_coords
         self.pop_quantity = pop_quantity
         self.sel_size = sel_size
+        self.elitism = elitism
         self.mut_prob = mut_prob
         self.iter_quantity = iter_quantity
         self.cost_traction = cost_traction
@@ -30,11 +31,10 @@ class Heuristics:
             #generate end raport
 
     def do_heuristic_iteration(self):
-        self.selection(self.sel_size)
-        self.crossover()
-        individuals_for_mutation = []
-        self.mutation(individuals_for_mutation, self.mut_prob)
-        self.succession()
+        selected_individuals = self.selection(self.sel_size)
+        post_crossover_population = self.crossover()
+        post_mutation_population = self.mutation(post_crossover_population, self.mut_prob)
+        self.population = self.succession(self.elitism, post_mutation_population)
         print "Iteration"
         #generate iteration raport
 
@@ -93,6 +93,8 @@ class Heuristics:
 
     def crossover(self):
         print "Crossover"
+        # quick fix
+        return []
 
     def mutation(self, individuals, probability):
         out_individuals = list()
@@ -103,8 +105,13 @@ class Heuristics:
                 out_individuals.append(individual)
         return out_individuals
 
-    def succession(self):
-        print "Succession"
+    def succession(self, kept_curr_best, crossover_pop):
+        next_population = []
+        for i in range(kept_curr_best):
+            if i < len(self.population):
+                next_population.append(self.best_individual(kept_curr_best))
+        next_population += crossover_pop
+        return next_population
 
     def best_individual(self, rank=0):
         if rank >= len(self.population):
