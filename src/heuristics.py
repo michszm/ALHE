@@ -1,6 +1,5 @@
 from raport_generator import RaportGenerator
 from structures import NetworkTree, LineSegment
-from utils import nrst_pt_on_seg
 from random import sample
 from random import random
 from bisect import bisect_left
@@ -65,28 +64,7 @@ class Heuristics:
                     usedSet.add(point)
 
             for coord in self.powers_coords:
-                min_dist = float("inf")
-                min_dist_point = None
-                min_dist_segment = None
-                for seg in individual.segments:
-                    points = seg.points.copy()
-                    point1 = points.pop()
-                    point2 = points.pop()
-                    pt, dist = nrst_pt_on_seg(coord + (0,),
-                                              point1 + (0,),
-                                              point2 + (0,))
-                    if dist < min_dist:
-                        min_dist = dist
-                        min_dist_point = (pt[0], pt[1])
-                        min_dist_segment = seg
-                if min_dist_point is not None:
-                    powers_seg = LineSegment(min_dist_point, coord)
-                    min_dist_segment.conn_to_powerstation = True
-                    min_dist_segment.powers_line_segment.append(powers_seg)
-                    min_dist_segment.powers_line_segment_len.append(min_dist)
-                    min_dist_segment.powers_coord.append(coord)
-                else:
-                    pass
+                individual.connect_power_plant(coord)
 
             individual.count_goal_func(self.cost_traction,
                                        self.cost_power_lines)
