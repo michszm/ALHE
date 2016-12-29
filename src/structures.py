@@ -19,6 +19,19 @@ class NetworkTree:
         self.goal_func = 1.0 / self.goal_func
         return self.goal_func
 
+    def mutate(self):
+        new_segment = self.add_any_new_segment()
+        new_segment_point = new_segment.points.copy().pop()
+        # WIP
+        # cycle_segments = self.find_cycle(new_segment_point)
+        cycle_segments = None
+        cycle_segments.remove(new_segment)
+        segment_to_remove = sample(cycle_segments, 1).pop()
+        self.segments.remove(segment_to_remove)
+        if segment_to_remove.conn_to_powerstation:
+            for coord in segment_to_remove.powers_coord:
+                self.connect_power_plant(coord)
+
     def add_new_segment(self, line_segment):
         self.segments.append(line_segment)
 
