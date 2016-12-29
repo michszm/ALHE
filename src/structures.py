@@ -23,7 +23,6 @@ class NetworkTree:
         new_segment = self.add_any_new_segment()
         new_segment_point = new_segment.points.copy().pop()
         cycle_segments = self.find_cycle(new_segment_point)
-        cycle_segments = None
         cycle_segments.remove(new_segment)
         segment_to_remove = sample(cycle_segments, 1).pop()
         self.segments.remove(segment_to_remove)
