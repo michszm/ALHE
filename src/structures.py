@@ -25,16 +25,20 @@ class NetworkTree:
 class LineSegment:
 
     def __init__(self, point1, point2):
-        self.point1 = point1
-        self.point2 = point2
-
+        self.points = set()
+        self.points.add(point1)
+        self.points.add(point2)
         self.conn_to_powerstation = False
         self.powers_line_segment = []
         self.powers_line_segment_len = []
         self.powers_coord = []
 
+    def __eq__(self, other):
+        return self.points == other.points
+
     def length(self):
-        return two_points_distance(self.point1 + (0,), self.point2 + (0,))
+        points = self.points.copy()
+        return two_points_distance(points.pop() + (0,), points.pop() + (0,))
 
     # x1, y1
     # x2, y2

@@ -69,9 +69,12 @@ class Heuristics:
                 min_dist_point = None
                 min_dist_segment = None
                 for seg in individual.segments:
+                    points = seg.points.copy()
+                    point1 = points.pop()
+                    point2 = points.pop()
                     pt, dist = nrst_pt_on_seg(coord + (0,),
-                                              seg.point1 + (0,),
-                                              seg.point2 + (0,))
+                                              point1 + (0,),
+                                              point2 + (0,))
                     if dist < min_dist:
                         min_dist = dist
                         min_dist_point = (pt[0], pt[1])
@@ -82,6 +85,8 @@ class Heuristics:
                     min_dist_segment.powers_line_segment.append(powers_seg)
                     min_dist_segment.powers_line_segment_len.append(min_dist)
                     min_dist_segment.powers_coord.append(coord)
+                else:
+                    pass
 
             individual.count_goal_func(self.cost_traction,
                                        self.cost_power_lines)
