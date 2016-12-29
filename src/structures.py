@@ -1,5 +1,6 @@
 from utils import two_points_distance
 from utils import nrst_pt_on_seg
+from random import sample
 
 class NetworkTree:
 
@@ -20,6 +21,44 @@ class NetworkTree:
 
     def add_new_segment(self, line_segment):
         self.segments.append(line_segment)
+
+    def add_any_new_segment(self):
+        adj_list = self.to_adj_list()
+        all_points = set(adj_list.keys())
+        unchecked_points = all_points.copy()
+        insert_point = None
+        point_outsiders = None
+        new_segment = None
+        while unchecked_points:
+            insert_point = sample(unchecked_points, 1).pop()
+            unchecked_points.remove(insert_point)
+            point_neighbors = adj_list[insert_point]
+            point_outsiders = (all_points - point_neighbors)
+            point_outsiders.remove(insert_point)
+            if point_outsiders:
+                break
+        if point_outsiders:
+            new_neighbor = sample(point_outsiders, 1).pop()
+            new_segment = LineSegment(insert_point, new_neighbor)
+            self.add_new_segment(new_segment)
+        else:
+            pass
+
+        return new_segment
+
+    def to_adj_list(self):
+        adj_list = {}
+        for seg in self.segments:
+            points = seg.points.copy()
+            point1 = points.pop()
+            point2 = points.pop()
+            if point1 not in adj_list:
+                adj_list[point1] = set()
+            if point2 not in adj_list:
+                adj_list[point2] = set()
+            adj_list[point1].add(point2)
+            adj_list[point2].add(point1)
+        return adj_list
 
     def connect_power_plant(self, powers_coord):
         min_dist = float("inf")
