@@ -22,8 +22,7 @@ class NetworkTree:
     def mutate(self):
         new_segment = self.add_any_new_segment()
         new_segment_point = new_segment.points.copy().pop()
-        # WIP
-        # cycle_segments = self.find_cycle(new_segment_point)
+        cycle_segments = self.find_cycle(new_segment_point)
         cycle_segments = None
         cycle_segments.remove(new_segment)
         segment_to_remove = sample(cycle_segments, 1).pop()
@@ -73,6 +72,41 @@ class NetworkTree:
             adj_list[point2].add(point1)
         return adj_list
 
+    def find_cycle(self, start_point):
+        adj_list = self.to_adj_list()
+        queue = [start_point]
+        visited = set()
+        visited.add(start_point)
+        parents = dict()
+        parents[start_point] = None
+        cycle = None
+        while queue and not cycle:
+            parent = queue.pop()
+            for child in adj_list[parent]:
+                if child in visited and child != parents[parent]:
+                    cycle = list()
+                    cycle.append(self.find_seg_with_coords(parent,  child))
+                    last_child = child
+                    child = parent
+                    parent = parents[parent]
+                    while parent is not last_child:
+                        cycle.append(self.find_seg_with_coords(parent, child))
+                        child = parent
+                        if not parents[parent]:
+                            break
+                        parent = parents[parent]
+                    if parent is not last_child:
+                        child = parent
+                        parent = last_child
+                        cycle.append(self.find_seg_with_coords(parent, child))
+                        break
+                elif child not in visited:
+                    visited.add(child)
+                    parents[child] = parent
+                    queue.append(child)
+
+        return cycle
+
     def connect_power_plant(self, powers_coord):
         min_dist = float("inf")
         min_dist_point = None
@@ -96,6 +130,12 @@ class NetworkTree:
             min_dist_segment.powers_coord.append(powers_coord)
         else:
             pass
+
+    def find_seg_with_coords(self, a, b):
+        segment = LineSegment(a, b)
+        segment_index = self.segments.index(segment)
+        found_segment = self.segments[segment_index]
+        return found_segment
 
 
 class LineSegment:
