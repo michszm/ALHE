@@ -9,11 +9,12 @@ class Heuristics:
     population = []
     is_population_sorted = False
 
-    def __init__(self, cities_coords, powers_coords, pop_quantity, sel_size, iter_quantity, cost_traction, cost_power_lines):
+    def __init__(self, cities_coords, powers_coords, pop_quantity, sel_size, mut_prob, iter_quantity, cost_traction, cost_power_lines):
         self.cities_coords = cities_coords
         self.powers_coords = powers_coords
         self.pop_quantity = pop_quantity
         self.sel_size = sel_size
+        self.mut_prob = mut_prob
         self.iter_quantity = iter_quantity
         self.cost_traction = cost_traction
         self.cost_power_lines = cost_power_lines
@@ -31,7 +32,8 @@ class Heuristics:
     def do_heuristic_iteration(self):
         self.selection(self.sel_size)
         self.crossover()
-        self.mutation()
+        individuals_for_mutation = []
+        self.mutation(individuals_for_mutation, self.mut_prob)
         self.succession()
         print "Iteration"
         #generate iteration raport
@@ -92,8 +94,14 @@ class Heuristics:
     def crossover(self):
         print "Crossover"
 
-    def mutation(self):
-        print "Mutation"
+    def mutation(self, individuals, probability):
+        out_individuals = list()
+        for individual in individuals:
+            if random() < float(probability):
+                out_individuals.append(individual.mutate())
+            else:
+                out_individuals.append(individual)
+        return out_individuals
 
     def succession(self):
         print "Succession"
