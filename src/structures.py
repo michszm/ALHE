@@ -4,9 +4,8 @@ from random import sample
 
 class NetworkTree:
 
-    goal_func = 0
-
     def __init__(self):
+        self.goal_func = 0
         self.segments = []
 
     def count_goal_func(self, cost_traction, cost_power_lines):
@@ -23,7 +22,7 @@ class NetworkTree:
         new_segment = self.add_any_new_segment()
         new_segment_point = new_segment.points.copy().pop()
         cycle_segments = self.find_cycle(new_segment_point)
-        cycle_segments = None
+        # cycle_segments = None
         cycle_segments.remove(new_segment)
         segment_to_remove = sample(cycle_segments, 1).pop()
         self.segments.remove(segment_to_remove)
@@ -137,6 +136,9 @@ class NetworkTree:
         found_segment = self.segments[segment_index]
         return found_segment
 
+    def pick_rand_segment(self):
+        rand_seg = sample(self.segments,1)
+        return rand_seg
 
 class LineSegment:
 
@@ -152,10 +154,11 @@ class LineSegment:
     def __eq__(self, other):
         return self.points == other.points
 
+    def __hash__(self):
+        points = self.points.copy()
+        return hash(tuple((points.pop(), points.pop())))
+
     def length(self):
         points = self.points.copy()
         return two_points_distance(points.pop() + (0,), points.pop() + (0,))
 
-    # x1, y1
-    # x2, y2
-    # px, py - powerstation locations

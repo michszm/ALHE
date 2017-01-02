@@ -1,21 +1,34 @@
 class DataReader:
 
+    def read_config(self, file_name):
+        file = open(file_name, "r")
+        test_files = []
+
+        for line in file:
+            row = ("".join(line.split())).split(";")
+            test_files.append((row[0],row[1],row[2]))
+
+        file.close()
+        return test_files
+
     def read_locations(self, file_name):
         file = open(file_name, "r")
-
-        coord = []
+        coord = set()
 
         for line in file:
             row = line.split()
-            coord.append((int(row[0]), int(row[1])))
+            coord.add((int(row[0]), int(row[1])))
 
         file.close()
         return coord
 
-    def read_arguments(self):
-        pop_quantity = raw_input()
-        iter_quantity = raw_input()
-        cost_traction = raw_input()
-        cost_power_lines =  raw_input()
+    def read_arguments(self, file_name):
+        file = open(file_name, "r")
+        args = []
 
-        return [pop_quantity, iter_quantity, cost_traction, cost_power_lines]
+        for line in file:
+            row = ("".join(line.split())).split(",")
+            args.append((int(row[0]), int(row[1]), int(row[2]), float(row[3]), float(row[4])))
+
+        file.close()
+        return args
