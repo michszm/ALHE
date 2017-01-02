@@ -22,15 +22,10 @@ class NetworkTree:
         new_segment = self.add_any_new_segment()
         new_segment_point = new_segment.points.copy().pop()
         cycle_segments = self.find_cycle(new_segment_point)
-<<<<<<< HEAD
         # cycle_segments = None
-=======
->>>>>>> 1a1a2c763efd798dbe39a059119dfb71bd9a77a4
         cycle_segments.remove(new_segment)
         segment_to_remove = sample(cycle_segments, 1).pop()
         self.segments.remove(segment_to_remove)
-        # what if the nearest point from some plant belongs to new_segment
-        # and the segment it was connected before performing mutation was not removed?
         if segment_to_remove.conn_to_powerstation:
             for coord in segment_to_remove.powers_coord:
                 self.connect_power_plant(coord)

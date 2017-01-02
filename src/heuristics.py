@@ -7,21 +7,15 @@ import sys
 import copy
 
 
-<<<<<<< HEAD
 class Heuristics:
     def __init__(self, cities_coords, powers_coords, pop_quantity, sel_size, iter_quantity, cost_traction,
                  cost_power_lines):
         self.population = []
         self.is_population_sorted = False
-=======
-    def __init__(self, cities_coords, powers_coords, pop_quantity, sel_size, elitism, mut_prob, iter_quantity, cost_traction, cost_power_lines):
->>>>>>> 1a1a2c763efd798dbe39a059119dfb71bd9a77a4
         self.cities_coords = cities_coords
         self.powers_coords = powers_coords
         self.pop_quantity = pop_quantity
         self.sel_size = sel_size
-        self.elitism = elitism
-        self.mut_prob = mut_prob
         self.iter_quantity = iter_quantity
         self.cost_traction = cost_traction
         self.cost_power_lines = cost_power_lines
@@ -40,19 +34,10 @@ class Heuristics:
         print "\n++++++++++++++++++++++++++++++++++++++++++++++++\n"
 
     def do_heuristic_iteration(self):
-<<<<<<< HEAD
         best_cost = 0.0
         avg_cost = 0.0
         avg_selected_cost = 0.0
         avg_generated_cost = 0.0
-=======
-        selected_individuals = self.selection(self.sel_size)
-        post_crossover_population = self.crossover()
-        post_mutation_population = self.mutation(post_crossover_population, self.mut_prob)
-        self.population = self.succession(self.elitism, post_mutation_population)
-        print "Iteration"
-        #generate iteration raport
->>>>>>> 1a1a2c763efd798dbe39a059119dfb71bd9a77a4
 
         sel_individuals = self.selection(self.sel_size)
         avg_selected_cost = self.count_avg_cost(sel_individuals)
@@ -125,7 +110,6 @@ class Heuristics:
 
         return sel_individuals
 
-<<<<<<< HEAD
     def crossover(self, individuals):
         iter = len(individuals) / 2
         cross_list = []
@@ -157,29 +141,6 @@ class Heuristics:
 
         for i in range(to_delete):
             self.population.pop()
-=======
-    def crossover(self):
-        print "Crossover"
-        # quick fix
-        return []
-
-    def mutation(self, individuals, probability):
-        out_individuals = list()
-        for individual in individuals:
-            if random() < float(probability):
-                out_individuals.append(individual.mutate())
-            else:
-                out_individuals.append(individual)
-        return out_individuals
-
-    def succession(self, kept_curr_best, crossover_pop):
-        next_population = []
-        for i in range(kept_curr_best):
-            if i < len(self.population):
-                next_population.append(self.best_individual(kept_curr_best))
-        next_population += crossover_pop
-        return next_population
->>>>>>> 1a1a2c763efd798dbe39a059119dfb71bd9a77a4
 
     def best_individual(self, rank=0):
         if rank >= len(self.population):
