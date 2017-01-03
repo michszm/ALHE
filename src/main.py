@@ -19,6 +19,6 @@ for test in test_files:
     args = DataReader().read_arguments(tests_file_path + test[2])
 
     for arg in args:
-        heur_alg = Heuristics(cities_coord, powers_coord, arg[0], arg[1], arg[2], arg[3], arg[4])
+        heur_alg = Heuristics(cities_coord, powers_coord, arg[0], arg[1], arg[2], arg[3], arg[4], arg[5], arg[6])
         heur_alg.run_heuristics()
 

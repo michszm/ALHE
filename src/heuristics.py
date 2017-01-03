@@ -1,14 +1,13 @@
 from raport_generator import RaportGenerator
 from structures import NetworkTree, LineSegment
-from random import sample
-from random import random, shuffle
+from random import sample, random, shuffle, uniform
 from bisect import bisect_left
 import sys
 import copy
 
 
 class Heuristics:
-    def __init__(self, cities_coords, powers_coords, pop_quantity, sel_size, iter_quantity, cost_traction,
+    def __init__(self, cities_coords, powers_coords, pop_quantity, sel_size, members_to_discard, iter_quantity, mut_prob, cost_traction,
                  cost_power_lines):
         self.population = []
         self.is_population_sorted = False
@@ -16,6 +15,8 @@ class Heuristics:
         self.powers_coords = powers_coords
         self.pop_quantity = pop_quantity
         self.sel_size = sel_size
+        self.members_to_discard = members_to_discard
+        self.mut_prob = mut_prob
         self.iter_quantity = iter_quantity
         self.cost_traction = cost_traction
         self.cost_power_lines = cost_power_lines
@@ -128,19 +129,20 @@ class Heuristics:
 
     def mutation(self, individuals):
         for indiv in individuals:
-            indiv.mutate()
+            if uniform(0.0, 1.0) < self.mut_prob:
+                indiv.mutate()
 
         return individuals
 
     def succession(self, mutated):
-        for indiv in mutated:
-            self.population.append(indiv)
-
         self.population.sort(key=lambda x: x.goal_func, reverse=True)
-        to_delete = len(self.population) - self.pop_quantity
-
-        for i in range(to_delete):
+        for i in range(self.members_to_discard):
             self.population.pop()
+
+        mutated.sort(key=lambda x: x.goal_func, reverse=True)
+        for i in range(self.members_to_discard):
+            self.population.append(mutated[i])
+
 
     def best_individual(self, rank=0):
         if rank >= len(self.population):
