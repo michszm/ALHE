@@ -21,11 +21,14 @@ class Heuristics:
         self.cost_traction = cost_traction
         self.cost_power_lines = cost_power_lines
         self.generate_initial_population()
-        self.raport_generator = RaportGenerator()
+        self.raport_gen = RaportGenerator()
 
     def run_heuristics(self):
+        best_individuals = []
+
         for i in range(self.iter_quantity):
             output = self.do_heuristic_iteration()
+            best_individuals.append(output[0])
 
             # tymczasowe info
             print str(i + 1) + "    |   " + "Best indiv: " + str(output[0]) + " |   " + "Avg cost: " + str(output[1])\
@@ -33,6 +36,11 @@ class Heuristics:
 
         # generate end raport
         print "\n++++++++++++++++++++++++++++++++++++++++++++++++\n"
+
+        self.raport_gen.plot_iterations(self.iter_quantity, best_individuals)
+        self.raport_gen.print_best_individual(self.best_individual(),
+                                              self.cities_coords,
+                                              self.powers_coords)
 
     def do_heuristic_iteration(self):
         best_cost = 0.0
