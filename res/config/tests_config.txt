@@ -1,2 +1,3 @@
 TC_001_cities_loc.txt; TC_001_power_loc.txt; TC_001_in_args.txt
 TC_002_cities_loc.txt; TC_002_power_loc.txt; TC_002_in_args.txt
+TC_003_cities_loc.txt; TC_003_power_loc.txt; TC_003_in_args.txt
