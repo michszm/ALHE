@@ -1,4 +1,4 @@
-from utils import two_points_distance
+from utils import two_pts_dist
 from utils import nrst_pt_on_seg
 from random import sample
 
@@ -7,8 +7,10 @@ class NetworkTree:
     def __init__(self):
         self.goal_func = 0
         self.segments = []
+        self.plant_to_seg = {}
 
     def count_goal_func(self, cost_traction, cost_power_lines):
+        self.goal_func = 0
         for seg in self.segments:
             if seg.conn_to_powerstation:
                 for power_seg_len in seg.powers_line_segment_len:
@@ -22,13 +24,23 @@ class NetworkTree:
         new_segment = self.add_any_new_segment()
         new_segment_point = new_segment.points.copy().pop()
         cycle_segments = self.find_cycle(new_segment_point)
-        # cycle_segments = None
         cycle_segments.remove(new_segment)
         segment_to_remove = sample(cycle_segments, 1).pop()
         self.segments.remove(segment_to_remove)
+
         if segment_to_remove.conn_to_powerstation:
             for coord in segment_to_remove.powers_coord:
                 self.connect_power_plant(coord)
+
+        new_seg_points = new_segment.get_points()
+        new_seg_a = new_seg_points.pop()
+        new_seg_b = new_seg_points.pop()
+        for plant in self.plant_to_seg:
+            nrst_pt, dist = nrst_pt_on_seg(plant + (0,), new_seg_a + (0,), new_seg_b + (0,))
+            curr_segment = self.plant_to_seg[plant]
+            if dist < curr_segment.dst_to_plant(plant):
+                self.unlink_plant_from_seg(curr_segment, plant)
+                self.link_plant_to_seg(new_segment, plant, nrst_pt)
 
     def add_new_segment(self, line_segment):
         self.segments.append(line_segment)
@@ -111,7 +123,7 @@ class NetworkTree:
         min_dist_point = None
         min_dist_segment = None
         for seg in self.segments:
-            points = seg.points.copy()
+            points = seg.get_points()
             point1 = points.pop()
             point2 = points.pop()
             pt, dist = nrst_pt_on_seg(powers_coord + (0,),
@@ -119,14 +131,10 @@ class NetworkTree:
                                       point2 + (0,))
             if dist < min_dist:
                 min_dist = dist
-                min_dist_point = (pt[0], pt[1])
+                min_dist_point = pt
                 min_dist_segment = seg
         if min_dist_point is not None:
-            powers_seg = LineSegment(min_dist_point, powers_coord)
-            min_dist_segment.conn_to_powerstation = True
-            min_dist_segment.powers_line_segment.append(powers_seg)
-            min_dist_segment.powers_line_segment_len.append(min_dist)
-            min_dist_segment.powers_coord.append(powers_coord)
+            self.link_plant_to_seg(min_dist_segment, powers_coord, min_dist_point)
         else:
             pass
 
@@ -139,6 +147,23 @@ class NetworkTree:
     def pick_rand_segment(self):
         rand_seg = sample(self.segments,1)
         return rand_seg
+
+    def link_plant_to_seg(self, seg, plant, link_pt):
+        if link_pt:
+            conn_seg = LineSegment(plant, link_pt)
+            seg.link_plant(plant, conn_seg, two_pts_dist(plant + (0,), link_pt + (0,)))
+        else:
+            seg_points= seg.get_points()
+            seg_a = seg_points.pop()
+            seg_b = seg_points.pop()
+            nrst_pt, dist = nrst_pt_on_seg(plant + (0,), seg_a + (0,), seg_b + (0,))
+            conn_seg = LineSegment(plant, nrst_pt)
+            seg.link_plant(plant, conn_seg, dist)
+        self.plant_to_seg[plant] = seg
+
+    def unlink_plant_from_seg(self, seg, plant):
+        seg.unlink_plant(plant)
+        self.plant_to_seg.pop(plant)
 
 class LineSegment:
 
@@ -158,7 +183,34 @@ class LineSegment:
         points = self.points.copy()
         return hash(tuple((points.pop(), points.pop())))
 
+    def dst_to_plant(self, plant):
+        if plant in self.powers_coord:
+            plant_index = self.powers_coord.index(plant)
+            return self.powers_line_segment_len[plant_index]
+        else:
+            return None
+
+    def link_plant(self, plant, conn_seg, conn_dst):
+        if not self.powers_coord:
+            self.conn_to_powerstation = True
+        self.powers_coord.append(plant)
+        self.powers_line_segment.append(conn_seg)
+        self.powers_line_segment_len.append(conn_dst)
+
+    def unlink_plant(self, plant):
+        if plant in self.powers_coord:
+            plant_index = self.powers_coord.index(plant)
+            self.powers_coord.pop(plant_index)
+            self.powers_line_segment_len.pop(plant_index)
+            self.powers_line_segment.pop(plant_index)
+            if not self.powers_coord:
+                self.conn_to_powerstation = False
+
     def length(self):
         points = self.points.copy()
-        return two_points_distance(points.pop() + (0,), points.pop() + (0,))
+        return two_pts_dist(points.pop() + (0,), points.pop() + (0,))
+
+    def get_points(self):
+        points_copy = self.points.copy()
+        return points_copy
 

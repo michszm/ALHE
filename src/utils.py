@@ -35,7 +35,7 @@ def scale_vector(v, s):
     return x * s, y * s, z * s
 
 
-def two_points_distance(a, b):
+def two_pts_dist(a, b):
     return vector_length(vector(a, b))
 
 
@@ -56,6 +56,7 @@ def nrst_pt_on_seg(x, a, b):
     nearest_point_on_unit = dot_product(segment_unit_vec, scaled_point_vec)
     nearest_point_on_unit = clamp(nearest_point_on_unit)
     nearest_point = scale_vector(segment_vec, nearest_point_on_unit)
-    distance_to_nearest_point = two_points_distance(nearest_point, point_vec)
+    distance_to_nearest_point = two_pts_dist(nearest_point, point_vec)
     nearest_point = translate_vector(nearest_point, a)
-    return nearest_point, distance_to_nearest_point
+    nearest_point_2d = (nearest_point[0], nearest_point[1])
+    return nearest_point_2d, distance_to_nearest_point
