@@ -42,6 +42,7 @@ class Heuristics:
                                               self.cities_coords,
                                               self.powers_coords)
 
+
     def do_heuristic_iteration(self):
         best_cost = 0.0
         avg_cost = 0.0
@@ -52,7 +53,6 @@ class Heuristics:
         avg_selected_cost = self.count_avg_cost(sel_individuals)
 
         crossovered = self.crossover(sel_individuals)
-
         mutated = self.mutation(crossovered)
         avg_generated_cost = self.count_avg_cost(mutated)
 
@@ -63,7 +63,7 @@ class Heuristics:
         # (najlepszego) osobnika
         best_cost = self.population[0].goal_func
 
-        # generate iteration raport
+        #generate iteration raport
         return [best_cost, avg_cost, avg_selected_cost, avg_generated_cost]
 
 
@@ -129,8 +129,16 @@ class Heuristics:
             indiv2 = individuals[2 * i + 1]
 
             merged = self.get_adjusted_merged_network(indiv1, indiv2)
+
+            powers_to_city_out = self.check_powers_to_city_conn(merged)
+            merged = powers_to_city_out[0]
+            powers_to_city = powers_to_city_out[1]
+
             connections = self.gen_conn_dict(merged)
+
             forest = self.gen_span_tree(connections)
+            forest = self.add_rest_of_powers(forest, powers_to_city)
+            forest.count_goal_func(self.cost_traction, self.cost_power_lines)
             cross_list.append(forest)
 
         return cross_list
@@ -213,9 +221,6 @@ class Heuristics:
             if val1.conn_to_powerstation == True:
                 powerstations.add_new_segment(val1)
 
-        for seg in powerstations.segments:
-            merged.segments.remove(seg)
-
         return [powerstations, merged]
 
     def clean_powerstations(self, merged):
@@ -259,6 +264,7 @@ class Heuristics:
 
     def gen_conn_dict(self, merged):
         connections = {}
+
         for city in self.cities_coords:
             connections[city] = []
 
@@ -312,9 +318,19 @@ class Heuristics:
             unusedSet.remove(picked_end_point)
             usedSet.add(picked_end_point)
 
-        forest.count_goal_func(self.cost_traction, self.cost_power_lines)
-
         return forest
+
+    def check_pop_con(self, population):
+        error_idx = []
+        i = 0
+        for ind in population:
+            res = self.check_conn(ind)
+            if(res == False):
+                error_idx.append(i)
+            i+=1
+
+
+        return len(error_idx) == 0
 
     def check_conn(self, network):
         powers = set()
@@ -325,9 +341,87 @@ class Heuristics:
 
         return len(powers) == len(self.powers_coords)
 
+    def check_powers_missing(self, network):
+        powers = set()
+        for seg in network.segments:
+            if seg.conn_to_powerstation == True:
+                for coord in seg.powers_coord:
+                    powers.add(coord)
+
+        ret_set = copy.deepcopy(self.powers_coords)
+        ret_set = ret_set.difference(powers)
+
+        return ret_set
+
     def count_avg_cost(self, population):
         cost = 0.0
         for individual in population:
             cost += individual.goal_func
 
         return cost / len(population)
+
+    def check_powers_to_city_conn(self, merged):
+        powers_to_city = {}
+
+        for seg in merged.segments:
+            points = seg.points.copy()
+            point1 = points.pop()
+            point2 = points.pop()
+
+            if seg.conn_to_powerstation == True:
+                # sprawdz polaczenia do miast
+                last_index = len(seg.powers_line_segment) - 1
+                for i in range(last_index + 1):
+                    power_points = seg.powers_line_segment[last_index - i].points.copy()
+                    city_point = None
+                    if point1 in power_points:
+                        city_point = point1
+                    if point2 in power_points:
+                        city_point = point2
+                    # jezeli elektrownia polaczona z miastem
+                    if city_point != None:
+                        power_point = seg.powers_coord[last_index - i]
+                        powers_to_city[power_point] = []
+                        powers_to_city[power_point].append(copy.deepcopy(seg.powers_line_segment[last_index - i]))
+                        powers_to_city[power_point].append(seg.powers_line_segment_len[last_index - i])
+                        del seg.powers_coord[last_index - i]
+                        del seg.powers_line_segment[last_index - i]
+                        del seg.powers_line_segment_len[last_index - i]
+
+                if len(seg.powers_line_segment) == 0:
+                    seg.conn_to_powerstation = False
+
+        return [merged, powers_to_city]
+
+    def add_rest_of_powers(self,forest, powers_to_city):
+        # dodaj polaczenia elektrowni do miast
+        for key in powers_to_city:
+            val = powers_to_city.get(key)
+            idx = 0
+            max = -1
+            for i in range(len(forest.segments)):
+                points = forest.segments[i].points.copy()
+                point1 = points.pop()
+                point2 = points.pop()
+
+                if point1 in val[0].points or point2 in val[0].points:
+                    if len(forest.segments[i].powers_line_segment) > max:
+                        max = len(forest.segments[i].powers_line_segment)
+                        idx = i
+
+            if len(forest.segments[idx].powers_line_segment) == 0:
+                forest.segments[idx].conn_to_powerstation = True
+
+            forest.segments[idx].powers_coord.append(key)
+            forest.segments[idx].powers_line_segment.append(val[0])
+            forest.segments[idx].powers_line_segment_len.append(val[1])
+
+        powers_missing = self.check_powers_missing(forest)
+
+        for pow in powers_missing:
+            forest.connect_power_plant(pow)
+
+        return forest
+
+
+

@@ -17,7 +17,7 @@ class DataReader:
 
         for line in file:
             row = line.split()
-            coord.add((int(row[0]), int(row[1])))
+            coord.add((float(row[0]), float(row[1])))
 
         file.close()
         return coord
