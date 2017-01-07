@@ -58,5 +58,9 @@ def nrst_pt_on_seg(x, a, b):
     nearest_point = scale_vector(segment_vec, nearest_point_on_unit)
     distance_to_nearest_point = two_pts_dist(nearest_point, point_vec)
     nearest_point = translate_vector(nearest_point, a)
-    nearest_point_2d = (nearest_point[0], nearest_point[1])
-    return nearest_point_2d, distance_to_nearest_point
+    return nearest_point, distance_to_nearest_point
+
+
+def nrst_pt_on_seg_plane(x, a, b):
+    (x, y, z), dst = nrst_pt_on_seg(x + (0,), a + (0,), b + (0,))
+    return (x, y), dst

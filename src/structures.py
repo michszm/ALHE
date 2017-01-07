@@ -1,5 +1,4 @@
-from utils import two_pts_dist
-from utils import nrst_pt_on_seg
+from utils import two_pts_dist, nrst_pt_on_seg_plane
 from random import sample
 
 class NetworkTree:
@@ -36,7 +35,7 @@ class NetworkTree:
         new_seg_a = new_seg_points.pop()
         new_seg_b = new_seg_points.pop()
         for plant in self.plant_to_seg:
-            nrst_pt, dist = nrst_pt_on_seg(plant + (0,), new_seg_a + (0,), new_seg_b + (0,))
+            nrst_pt, dist = nrst_pt_on_seg_plane(plant, new_seg_a, new_seg_b)
             curr_segment = self.plant_to_seg[plant]
             if dist < curr_segment.dst_to_plant(plant):
                 self.unlink_plant_from_seg(curr_segment, plant)
@@ -126,9 +125,7 @@ class NetworkTree:
             points = seg.get_points()
             point1 = points.pop()
             point2 = points.pop()
-            pt, dist = nrst_pt_on_seg(powers_coord + (0,),
-                                      point1 + (0,),
-                                      point2 + (0,))
+            pt, dist = nrst_pt_on_seg_plane(powers_coord, point1, point2)
             if dist < min_dist:
                 min_dist = dist
                 min_dist_point = pt
@@ -156,7 +153,7 @@ class NetworkTree:
             seg_points= seg.get_points()
             seg_a = seg_points.pop()
             seg_b = seg_points.pop()
-            nrst_pt, dist = nrst_pt_on_seg(plant + (0,), seg_a + (0,), seg_b + (0,))
+            nrst_pt, dist = nrst_pt_on_seg_plane(plant, seg_a, seg_b)
             conn_seg = LineSegment(plant, nrst_pt)
             seg.link_plant(plant, conn_seg, dist)
         self.plant_to_seg[plant] = seg
