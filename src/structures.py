@@ -11,11 +11,12 @@ class NetworkTree:
     def count_goal_func(self, cost_traction, cost_power_lines):
         self.goal_func = 0
         for seg in self.segments:
+            self.goal_func += seg.length() * cost_traction
+
             if seg.conn_to_powerstation:
                 for power_seg_len in seg.powers_line_segment_len:
                     self.goal_func += power_seg_len * cost_power_lines
-            else:
-                self.goal_func += seg.length() * cost_traction
+
         self.goal_func = 1.0 / self.goal_func
         return self.goal_func
 
