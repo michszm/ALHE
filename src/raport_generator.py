@@ -25,10 +25,10 @@ class RaportGenerator:
         g = nx.Graph()
 
         cityNodes = {i: i for i in cities}
-        nx.draw_networkx_nodes(g, cityNodes, cityNodes.keys(), node_color='red', node_size=250, label='Miasto')
+        nx.draw_networkx_nodes(g, cityNodes, cityNodes.keys(), node_color='red', node_size=75, label='Miasto')
 
         powerNodes = {i: i for i in powers}
-        nx.draw_networkx_nodes(g, powerNodes, powerNodes.keys(), node_color='yellow', node_size=250, label='Elektrownia')
+        nx.draw_networkx_nodes(g, powerNodes, powerNodes.keys(), node_color='yellow', node_size=25, label='Elektrownia')
 
         for seg in individual.segments:
             if seg.conn_to_powerstation is True:
@@ -38,11 +38,11 @@ class RaportGenerator:
                         point1 = points_set.pop()
                         if not cityNodes.has_key(point1) and not powerNodes.has_key(point1):
                             pos = {point1: point1}
-                            nx.draw_networkx_nodes(g, pos, pos.keys(), node_color='green', node_size=25)
+                            nx.draw_networkx_nodes(g, pos, pos.keys(), node_color='green', node_size=10)
                         point2 = points_set.pop()
                         if not cityNodes.has_key(point2) and not powerNodes.has_key(point2):
                             pos = {point2: point2}
-                            nx.draw_networkx_nodes(g, pos, pos.keys(), node_color='green', node_size=25)
+                            nx.draw_networkx_nodes(g, pos, pos.keys(), node_color='green', node_size=10)
                         pos = {point1: point1, point2: point2}
                         nx.draw_networkx_edges(g, pos, [(point1, point2)], edge_color='green')
             points_set = seg.points.copy()
