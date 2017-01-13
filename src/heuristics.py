@@ -138,7 +138,9 @@ class Heuristics:
 
             forest = self.gen_span_tree(connections)
             forest = self.add_rest_of_powers(forest, powers_to_city)
+            forest = self.update_powers_link(forest)
             forest.count_goal_func(self.cost_traction, self.cost_power_lines)
+
             cross_list.append(forest)
 
         return cross_list
@@ -424,4 +426,11 @@ class Heuristics:
         return forest
 
 
+    def update_powers_link(self, forest):
+        for seg in forest.segments:
+            if seg.conn_to_powerstation == True:
+                for coord in seg.powers_coord:
+                    forest.plant_to_seg[coord] = seg
+
+        return forest
 
