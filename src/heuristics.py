@@ -120,13 +120,13 @@ class Heuristics:
         return sel_individuals
 
     def crossover(self, individuals):
-        iter = len(individuals) / 2
+        iter = self.members_to_discard
         cross_list = []
-        shuffle(individuals)
+        to_crossover = self.generate_pairs(individuals)
 
         for i in range(iter):
-            indiv1 = individuals[2 * i]
-            indiv2 = individuals[2 * i + 1]
+            indiv1 = to_crossover[2 * i]
+            indiv2 = to_crossover[2 * i + 1]
 
             merged = self.get_adjusted_merged_network(indiv1, indiv2)
 
@@ -161,7 +161,6 @@ class Heuristics:
         for i in range(self.members_to_discard):
             self.population.append(mutated[i])
 
-
     def best_individual(self, rank=0):
         if rank >= len(self.population):
             rank = len(self.population) - 1
@@ -170,6 +169,21 @@ class Heuristics:
                                  reverse=True)
             self.is_population_sorted = True
         return self.population[rank]
+
+    def generate_pairs(self, individuals):
+        pair_list = []
+        num = 2 * self.members_to_discard
+        to_add = len(individuals)
+
+        while(num > 0):
+            num -= to_add
+            if num < 0:
+                to_add += num
+            shuffle(individuals)
+            pair_list += individuals[0:to_add]
+
+        return pair_list
+
 
     def merge_parents(self, indiv1, indiv2):
         seg_len = len(indiv1.segments)
