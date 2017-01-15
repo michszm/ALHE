@@ -292,14 +292,21 @@ class Heuristics:
             points = seg.points.copy()
             point1 = points.pop()
             point2 = points.pop()
+            probability = 0
+            pow_bonus = 0
 
-            if seg.conn_to_powerstation == True:
-                cost = two_pts_dist(point1 + (0,), point2 + (0,)) #/ (self.cost_power_lines / (self.cost_traction *len(seg.powers_coord)))
-            else:
-                cost = two_pts_dist(point1 + (0,), point2 + (0,))
+            seg_prob = 1 / (two_pts_dist(point1 + (0,), point2 + (0,)) * self.cost_traction)
 
-            connections.get(point1).append([seg, cost])
-            connections.get(point2).append([seg, cost])
+            for pow_len in seg.powers_line_segment_len:
+                if pow_len >= 1:
+                    pow_bonus += (1 / pow_len)
+                else:
+                    pow_bonus += 1
+
+            probability = seg_prob + seg_prob * pow_bonus * (self.cost_traction / self.cost_power_lines)
+
+            connections.get(point1).append([seg, probability])
+            connections.get(point2).append([seg, probability])
 
         return connections
 
@@ -319,7 +326,7 @@ class Heuristics:
             picked_end_point = None
             min_val = float("inf")
             pick = None
-            probability = []
+            probabilities = []
             to_pick_from = []
             sum_of_unpicked = 0
 
@@ -337,13 +344,13 @@ class Heuristics:
 
                     if end_point in unusedSet:
                         to_pick_from.append(el[0])
-                        probability.append(1 / el[1])
-                        sum_of_unpicked += 1 / el[1]
+                        probabilities.append(el[1])
+                        sum_of_unpicked += el[1]
 
-            for i in range(len(probability)):
-                probability[i] /= sum_of_unpicked
+            for i in range(len(probabilities)):
+                probabilities[i] /= sum_of_unpicked
 
-            pick = choice(to_pick_from,1,probability)[0]
+            pick = choice(to_pick_from,1,probabilities)[0]
             forest.add_new_segment(pick)
 
             points = pick.points.copy()
@@ -366,7 +373,6 @@ class Heuristics:
             if(res == False):
                 error_idx.append(i)
             i+=1
-
 
         return len(error_idx) == 0
 
