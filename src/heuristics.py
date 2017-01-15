@@ -292,7 +292,7 @@ class Heuristics:
             point2 = points.pop()
 
             if seg.conn_to_powerstation == True:
-                cost = two_pts_dist(point1 + (0,), point2 + (0,)) / len(seg.powers_coord)
+                cost = two_pts_dist(point1 + (0,), point2 + (0,)) / (self.cost_power_lines / (self.cost_traction *len(seg.powers_coord)))
             else:
                 cost = two_pts_dist(point1 + (0,), point2 + (0,))
 
@@ -331,8 +331,8 @@ class Heuristics:
 
                     if end_point in unusedSet:
                         to_pick_from.append(el[0])
-                        probability.append(el[1])
-                        sum_of_unpicked += el[1]
+                        probability.append(1 / el[1])
+                        sum_of_unpicked += 1 / el[1]
 
             for i in range(len(probability)):
                 probability[i] /= sum_of_unpicked
