@@ -1,7 +1,9 @@
 from raport_generator import RaportGenerator
 from structures import NetworkTree, LineSegment
 from random import sample, random, shuffle, uniform
+from numpy.random import choice
 from bisect import bisect_left
+from utils import two_pts_dist
 import sys
 import copy
 
@@ -290,9 +292,9 @@ class Heuristics:
             point2 = points.pop()
 
             if seg.conn_to_powerstation == True:
-                cost = 0
+                cost = two_pts_dist(point1 + (0,), point2 + (0,)) / len(seg.powers_coord)
             else:
-                cost = sys.float_info.max - 1
+                cost = two_pts_dist(point1 + (0,), point2 + (0,))
 
             connections.get(point1).append([seg, cost])
             connections.get(point2).append([seg, cost])
@@ -303,10 +305,8 @@ class Heuristics:
         usedSet = set()
         unusedSet = set()
         unusedSet = self.cities_coords.copy()
-
         forest = NetworkTree()
         start_point = sample(unusedSet, 1).pop()
-
         usedSet.add(start_point)
         unusedSet.remove(start_point)
 
@@ -315,7 +315,11 @@ class Heuristics:
 
             picked_seg = None
             picked_end_point = None
-            min_val = float("inf")
+            #min_val = float("inf")
+
+            probability = []
+            to_pick_from = []
+            sum_of_unpicked = 0
 
             for point in usedSet:
                 shuffle(connections.get(point))
@@ -325,14 +329,26 @@ class Heuristics:
                     points.remove(point)
                     end_point = points.pop()
 
-                    if el[1] < min_val and end_point in unusedSet:
-                        min_val = el[1]
-                        picked_seg = el[0]
-                        picked_end_point = end_point
+                    if end_point in unusedSet:
+                        to_pick_from.append(el[0])
+                        probability.append(el[1])
+                        sum_of_unpicked += el[1]
 
-            forest.add_new_segment(picked_seg)
-            unusedSet.remove(picked_end_point)
-            usedSet.add(picked_end_point)
+            for i in range(len(probability)):
+                probability[i] /= sum_of_unpicked
+
+            pick = choice(to_pick_from,1,probability)[0]
+            forest.add_new_segment(pick)
+
+            points = pick.points.copy()
+            point1 = points.pop()
+            point2 = points.pop()
+            if point1 in unusedSet:
+                unusedSet.remove(point1)
+                usedSet.add(point1)
+            else:
+                unusedSet.remove(point2)
+                usedSet.add(point2)
 
         return forest
 
