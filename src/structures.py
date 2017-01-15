@@ -163,6 +163,18 @@ class NetworkTree:
         seg.unlink_plant(plant)
         self.plant_to_seg.pop(plant)
 
+    def traction_powers_lengths(self):
+        traction_len = 0
+        powers_len = 0
+
+        for seg in self.segments:
+            traction_len += seg.length()
+            if seg.conn_to_powerstation:
+                for power_seg_len in seg.powers_line_segment_len:
+                    powers_len += power_seg_len
+        return traction_len, powers_len
+
+
 class LineSegment:
 
     def __init__(self, point1, point2):

@@ -42,7 +42,9 @@ class Heuristics:
         self.raport_gen.plot_iterations(self.iter_quantity, best_individuals)
         self.raport_gen.print_best_individual(self.best_individual(),
                                               self.cities_coords,
-                                              self.powers_coords)
+                                              self.powers_coords,
+                                              self.cost_traction,
+                                              self.cost_power_lines)
 
 
     def do_heuristic_iteration(self):
