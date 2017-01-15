@@ -6,7 +6,8 @@ class DataReader:
 
         for line in file:
             row = ("".join(line.split())).split(";")
-            test_files.append((row[0],row[1],row[2]))
+            if row[0][0] != "#":
+                test_files.append((row[0],row[1],row[2]))
 
         file.close()
         return test_files
