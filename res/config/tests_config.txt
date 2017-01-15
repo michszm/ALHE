@@ -6,3 +6,4 @@ TC_005_cities_loc.txt; TC_005_power_loc.txt; TC_005_in_args.txt
 TC_006_cities_loc.txt; TC_006_power_loc.txt; TC_006_in_args.txt
 TC_007_cities_loc.txt; TC_007_power_loc.txt; TC_007_in_args.txt
 TC_008_cities_loc.txt; TC_008_power_loc.txt; TC_008_in_args.txt
+TC_009_cities_loc.txt; TC_009_power_loc.txt; TC_009_in_args.txt
