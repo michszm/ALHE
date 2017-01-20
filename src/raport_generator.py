@@ -1,11 +1,12 @@
 from matplotlib import pyplot
 import networkx as nx
-
+import datetime
 
 class RaportGenerator:
 
     def __init__(self):
         print "Init report"
+        self.format = "%Y_%m_%d_%H_%M_%S"
 
     def generate_report(self):
         print "Report"
@@ -19,7 +20,7 @@ class RaportGenerator:
         pyplot.title('Przebieg dzialania algorytmu')
         pyplot.plot(x, y, color='black', label='O(i)')
         pyplot.legend(loc='best')
-        pyplot.savefig(filename + '_iterations.png')
+        pyplot.savefig(filename + '_' + datetime.datetime.today().strftime(self.format) + '_iterations.png')
 
     def print_best_individual(self, individual, cities, powers,cost_traction, cost_power_lines, filename):
         figure, axes = pyplot.subplots()
@@ -68,4 +69,4 @@ class RaportGenerator:
         handles, labels = axes.get_legend_handles_labels()
         legend = axes.legend(handles, labels, loc='upper center', ncol=3, bbox_to_anchor=(0.5,-0.1))
         legend.get_frame().set_alpha(0.5)
-        pyplot.savefig(filename + '_best.png', bbox_extra_artists=(legend,), bbox_inches='tight')
+        pyplot.savefig(filename + '_' + datetime.datetime.today().strftime(self.format) + '_best.png', bbox_extra_artists=(legend,), bbox_inches='tight')
