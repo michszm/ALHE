@@ -21,6 +21,7 @@ class RaportGenerator:
         pyplot.plot(x, y, color='black', label='O(i)')
         pyplot.legend(loc='best')
         pyplot.savefig(filename + '_' + datetime.datetime.today().strftime(self.format) + '_iterations.png')
+        pyplot.gcf().clear()
 
     def print_best_individual(self, individual, cities, powers,cost_traction, cost_power_lines, filename):
         figure, axes = pyplot.subplots()
@@ -70,3 +71,4 @@ class RaportGenerator:
         legend = axes.legend(handles, labels, loc='upper center', ncol=3, bbox_to_anchor=(0.5,-0.1))
         legend.get_frame().set_alpha(0.5)
         pyplot.savefig(filename + '_' + datetime.datetime.today().strftime(self.format) + '_best.png', bbox_extra_artists=(legend,), bbox_inches='tight')
+        pyplot.gcf().clear()

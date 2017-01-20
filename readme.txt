@@ -1,3 +1,5 @@
+Python 2.7
+
 config /res/config/tests_config.txt
 
 tests
