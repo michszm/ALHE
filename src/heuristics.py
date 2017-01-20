@@ -24,7 +24,7 @@ class Heuristics:
         self.generate_initial_population()
         self.raport_gen = RaportGenerator()
 
-    def run_heuristics(self, filename):
+    def run_heuristics(self, raport_out_dir, filename):
         best_individuals = []
 
         for i in range(self.iter_quantity):
@@ -40,6 +40,7 @@ class Heuristics:
 
         self.raport_gen.plot_iterations(self.iter_quantity,
                                         best_individuals,
+                                        raport_out_dir,
                                         filename)
 
         self.raport_gen.print_best_individual(self.best_individual(),
@@ -47,6 +48,7 @@ class Heuristics:
                                               self.powers_coords,
                                               self.cost_traction,
                                               self.cost_power_lines,
+                                              raport_out_dir,
                                               filename)
 
 

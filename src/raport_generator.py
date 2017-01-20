@@ -5,13 +5,12 @@ import datetime
 class RaportGenerator:
 
     def __init__(self):
-        print "Init report"
         self.format = "%Y_%m_%d_%H_%M_%S"
 
     def generate_report(self):
         print "Report"
 
-    def plot_iterations(self, size, data, filename):
+    def plot_iterations(self, size, data, raport_out_dir, filename):
         x = range(1, size + 1)
         y = data
 
@@ -20,10 +19,10 @@ class RaportGenerator:
         pyplot.title('Przebieg dzialania algorytmu')
         pyplot.plot(x, y, color='black', label='O(i)')
         pyplot.legend(loc='best')
-        pyplot.savefig(filename + '_' + datetime.datetime.today().strftime(self.format) + '_iterations.png')
+        pyplot.savefig(raport_out_dir + "/" + filename + '_' + datetime.datetime.today().strftime(self.format) + '_iterations.png')
         pyplot.gcf().clear()
 
-    def print_best_individual(self, individual, cities, powers,cost_traction, cost_power_lines, filename):
+    def print_best_individual(self, individual, cities, powers,cost_traction, cost_power_lines, raport_out_dir, filename):
         figure, axes = pyplot.subplots()
         g = nx.Graph()
 
@@ -70,5 +69,5 @@ class RaportGenerator:
         handles, labels = axes.get_legend_handles_labels()
         legend = axes.legend(handles, labels, loc='upper center', ncol=3, bbox_to_anchor=(0.5,-0.1))
         legend.get_frame().set_alpha(0.5)
-        pyplot.savefig(filename + '_' + datetime.datetime.today().strftime(self.format) + '_best.png', bbox_extra_artists=(legend,), bbox_inches='tight')
+        pyplot.savefig(raport_out_dir + "/" + filename + '_' + datetime.datetime.today().strftime(self.format) + '_best.png', bbox_extra_artists=(legend,), bbox_inches='tight')
         pyplot.gcf().clear()
