@@ -4,7 +4,6 @@ from random import sample, random, shuffle, uniform
 from numpy.random import choice
 from bisect import bisect_left
 from utils import two_pts_dist
-import sys
 import copy
 
 
@@ -25,7 +24,7 @@ class Heuristics:
         self.generate_initial_population()
         self.raport_gen = RaportGenerator()
 
-    def run_heuristics(self):
+    def run_heuristics(self, filename):
         best_individuals = []
 
         for i in range(self.iter_quantity):
@@ -39,12 +38,16 @@ class Heuristics:
         # generate end raport
         print "\n++++++++++++++++++++++++++++++++++++++++++++++++\n"
 
-        self.raport_gen.plot_iterations(self.iter_quantity, best_individuals)
+        self.raport_gen.plot_iterations(self.iter_quantity,
+                                        best_individuals,
+                                        filename)
+
         self.raport_gen.print_best_individual(self.best_individual(),
                                               self.cities_coords,
                                               self.powers_coords,
                                               self.cost_traction,
-                                              self.cost_power_lines)
+                                              self.cost_power_lines,
+                                              filename)
 
 
     def do_heuristic_iteration(self):

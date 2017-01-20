@@ -8,6 +8,7 @@ from heuristics import Heuristics
 
 config_file_path = "../res/config/"
 tests_file_path = "../res/tests/"
+raport_figures_file_path = "../res/raport_figures/"
 
 config_file_name = "tests_config.txt"
 
@@ -20,5 +21,5 @@ for test in test_files:
 
     for arg in args:
         heur_alg = Heuristics(cities_coord, powers_coord, arg[0], arg[1], arg[2], arg[3], arg[4], arg[5], arg[6])
-        heur_alg.run_heuristics()
+        heur_alg.run_heuristics(raport_figures_file_path + test[0][:6])
 

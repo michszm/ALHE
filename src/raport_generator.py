@@ -10,7 +10,7 @@ class RaportGenerator:
     def generate_report(self):
         print "Report"
 
-    def plot_iterations(self, size, data):
+    def plot_iterations(self, size, data, filename):
         x = range(1, size + 1)
         y = data
 
@@ -18,10 +18,10 @@ class RaportGenerator:
         pyplot.ylabel('Funkcja celu (O)')
         pyplot.title('Przebieg dzialania algorytmu')
         pyplot.plot(x, y, color='black', label='O(i)')
-        pyplot.legend()
-        pyplot.show()
+        pyplot.legend(loc='best')
+        pyplot.savefig(filename + '_iterations.png')
 
-    def print_best_individual(self, individual, cities, powers,cost_traction, cost_power_lines):
+    def print_best_individual(self, individual, cities, powers,cost_traction, cost_power_lines, filename):
         figure, axes = pyplot.subplots()
         g = nx.Graph()
 
@@ -35,9 +35,10 @@ class RaportGenerator:
         powerNodes = {i: i for i in powers}
         nx.draw_networkx_nodes(g, powerNodes, powerNodes.keys(), node_color='yellow', node_size=25, label='Elektrownia' + '\n'
                                                                                                           + 'DE: ' + str(format(powers_len, '.5f')) + '\n'
-                                                                                                          + 'KE: ' + str(cost_power_lines) + '\n'
-                                                                                                          + 'FC: ' + str(format(individual.goal_func, '.5f')),
+                                                                                                          + 'KE: ' + str(cost_power_lines) + '\n',
                                                                                                           ax=axes)
+        nullNodes = {(0, 0): (0, 0)}
+        nx.draw_networkx_nodes(g, nullNodes, nullNodes.keys(), node_color='white', node_size=0, label='FC: ' + str(format(individual.goal_func, '.5f')))
 
         for seg in individual.segments:
             if seg.conn_to_powerstation is True:
@@ -64,6 +65,7 @@ class RaportGenerator:
         pyplot.xlabel('x')
         pyplot.ylabel('y')
         pyplot.title('Najlepszy osobnik')
-        legend = pyplot.legend()
+        handles, labels = axes.get_legend_handles_labels()
+        legend = axes.legend(handles, labels, loc='upper center', ncol=3, bbox_to_anchor=(0.5,-0.1))
         legend.get_frame().set_alpha(0.5)
-        pyplot.show()
+        pyplot.savefig(filename + '_best.png', bbox_extra_artists=(legend,), bbox_inches='tight')
