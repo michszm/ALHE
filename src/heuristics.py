@@ -53,6 +53,8 @@ class Heuristics:
 
         print "\n++++++++++++++++++++++++++++++++++++++++++++++++\n"
 
+        return best_individuals, self.parameters
+
 
     def do_heuristic_iteration(self):
         best_cost = 0.0

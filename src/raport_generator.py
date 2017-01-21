@@ -94,3 +94,32 @@ class RaportGenerator:
         pyplot.savefig(raport_out_dir + "/" + file_out,
                        bbox_extra_artists=(legend,), bbox_inches='tight')
         pyplot.close(figure)
+
+    def plot_average(self, size, data_per_iteration, raport_out_dir, filename, params):
+        figure, axes = pyplot.subplots()
+
+        x = range(1, size + 1)
+        y = data_per_iteration[1]
+        yerr_min = data_per_iteration[0]
+        yerr_max = data_per_iteration[2]
+
+        pyplot.xlabel('Numer iteracji (i)')
+        pyplot.ylabel('Funkcja celu (O)')
+        pyplot.title('Przebieg dzialania algorytmu')
+        pyplot.errorbar(x, y, yerr=[yerr_min, yerr_max], color='black', label='O(i)')
+
+        x = range(0)
+        y = range(0)
+        pyplot.plot(x, y, color='white', label='P: ' + str(params[0])
+                                                + '\nE: ' + str(params[1])
+                                                + '\nI: ' + str(params[2])
+                                                + '\nM: ' + str(params[3]))
+
+        handles, labels = axes.get_legend_handles_labels()
+        legend = axes.legend(handles, labels, loc='upper center', ncol=2, bbox_to_anchor=(0.5, -0.1))
+        legend.get_frame().set_alpha(0.5)
+        file_out = filename + '_' + datetime.datetime.today().strftime(self.format) + '_iterations.png'
+        print "Generate iterations raport: \t\t" + file_out
+        pyplot.savefig(raport_out_dir + "/" + file_out,
+                       bbox_extra_artists=(legend,), bbox_inches='tight')
+        pyplot.close(figure)
