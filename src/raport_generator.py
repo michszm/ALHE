@@ -30,7 +30,9 @@ class RaportGenerator:
         handles, labels = axes.get_legend_handles_labels()
         legend = axes.legend(handles, labels, loc='upper center', ncol=2, bbox_to_anchor=(0.5, -0.1))
         legend.get_frame().set_alpha(0.5)
-        pyplot.savefig(raport_out_dir + "/" + filename + '_' + datetime.datetime.today().strftime(self.format) + '_iterations.png',
+        file_out = filename + '_' + datetime.datetime.today().strftime(self.format) + '_iterations.png'
+        print "Generate iterations raport: \t\t" + file_out
+        pyplot.savefig(raport_out_dir + "/" + file_out,
                        bbox_extra_artists=(legend,), bbox_inches='tight')
         pyplot.close(figure)
 
@@ -86,6 +88,8 @@ class RaportGenerator:
         handles, labels = axes.get_legend_handles_labels()
         legend = axes.legend(handles, labels, loc='upper center', ncol=3, bbox_to_anchor=(0.5, -0.1))
         legend.get_frame().set_alpha(0.5)
-        pyplot.savefig(raport_out_dir + "/" + filename + '_' + datetime.datetime.today().strftime(self.format) + '_best.png',
+        file_out = filename + '_' + datetime.datetime.today().strftime(self.format) + '_best.png'
+        print "Generate best individual raport: \t" + file_out
+        pyplot.savefig(raport_out_dir + "/" + file_out,
                        bbox_extra_artists=(legend,), bbox_inches='tight')
         pyplot.close(figure)

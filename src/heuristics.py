@@ -36,8 +36,7 @@ class Heuristics:
             print str(i + 1) + "    |   " + "Best indiv: " + str(output[0]) + " |   " + "Avg cost: " + str(output[1])\
                   + " |   " + "Avg selected cost: " + str(output[2]) + " |   " + "Avg gen cost: " + str(output[3])
 
-        # generate end raport
-        print "\n++++++++++++++++++++++++++++++++++++++++++++++++\n"
+        print ""
 
         self.raport_gen.plot_iterations(self.iter_quantity,
                                         best_individuals,
@@ -51,6 +50,8 @@ class Heuristics:
                                               self.cost_power_lines,
                                               raport_out_dir,
                                               filename, self.parameters)
+
+        print "\n++++++++++++++++++++++++++++++++++++++++++++++++\n"
 
 
     def do_heuristic_iteration(self):
