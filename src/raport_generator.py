@@ -5,7 +5,7 @@ import datetime
 class RaportGenerator:
 
     def __init__(self):
-        self.format = "%Y_%m_%d_%H_%M_%S"
+        self.format = "%Y_%m_%d_%H_%M_%S_%f"
 
     def generate_report(self):
         print "Report"
