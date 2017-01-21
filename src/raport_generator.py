@@ -54,6 +54,7 @@ class RaportGenerator:
                                                                                                           ax=axes)
         nullNodes = {(0, 0): (0, 0)}
         nx.draw_networkx_nodes(g, nullNodes, nullNodes.keys(), node_color='white', node_size=0, label='FC: ' + str(individual.goal_func)
+                                                                                                             + '\nKC: ' + str(1 / individual.goal_func)
                                                                                                              + '\nP: ' + str(params[0])
                                                                                                              + '\nE: ' + str(params[1])
                                                                                                              + '\nI: ' + str(params[2])
