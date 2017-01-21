@@ -10,6 +10,7 @@ import copy
 class Heuristics:
     def __init__(self, cities_coords, powers_coords, pop_quantity, sel_size, members_to_discard, iter_quantity, mut_prob, cost_traction,
                  cost_power_lines):
+        self.parameters = [pop_quantity, pop_quantity - members_to_discard, iter_quantity, mut_prob]
         self.population = []
         self.is_population_sorted = False
         self.cities_coords = cities_coords
@@ -41,7 +42,7 @@ class Heuristics:
         self.raport_gen.plot_iterations(self.iter_quantity,
                                         best_individuals,
                                         raport_out_dir,
-                                        filename)
+                                        filename, self.parameters)
 
         self.raport_gen.print_best_individual(self.best_individual(),
                                               self.cities_coords,
@@ -49,7 +50,7 @@ class Heuristics:
                                               self.cost_traction,
                                               self.cost_power_lines,
                                               raport_out_dir,
-                                              filename)
+                                              filename, self.parameters)
 
 
     def do_heuristic_iteration(self):

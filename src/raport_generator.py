@@ -10,19 +10,31 @@ class RaportGenerator:
     def generate_report(self):
         print "Report"
 
-    def plot_iterations(self, size, data, raport_out_dir, filename):
+    def plot_iterations(self, size, data, raport_out_dir, filename, params):
+        figure, axes = pyplot.subplots()
+
         x = range(1, size + 1)
         y = data
-
         pyplot.xlabel('Numer iteracji (i)')
         pyplot.ylabel('Funkcja celu (O)')
         pyplot.title('Przebieg dzialania algorytmu')
         pyplot.plot(x, y, color='black', label='O(i)')
-        pyplot.legend(loc='best')
-        pyplot.savefig(raport_out_dir + "/" + filename + '_' + datetime.datetime.today().strftime(self.format) + '_iterations.png')
-        pyplot.gcf().clear()
 
-    def print_best_individual(self, individual, cities, powers,cost_traction, cost_power_lines, raport_out_dir, filename):
+        x = range(0)
+        y = range(0)
+        pyplot.plot(x, y, color='white', label='P: ' + str(params[0])
+                                                + '\nE: ' + str(params[1])
+                                                + '\nI: ' + str(params[2])
+                                                + '\nM: ' + str(params[3]))
+
+        handles, labels = axes.get_legend_handles_labels()
+        legend = axes.legend(handles, labels, loc='upper center', ncol=2, bbox_to_anchor=(0.5, -0.1))
+        legend.get_frame().set_alpha(0.5)
+        pyplot.savefig(raport_out_dir + "/" + filename + '_' + datetime.datetime.today().strftime(self.format) + '_iterations.png',
+                       bbox_extra_artists=(legend,), bbox_inches='tight')
+        pyplot.close(figure)
+
+    def print_best_individual(self, individual, cities, powers,cost_traction, cost_power_lines, raport_out_dir, filename, params):
         figure, axes = pyplot.subplots()
         g = nx.Graph()
 
@@ -39,7 +51,12 @@ class RaportGenerator:
                                                                                                           + 'KE: ' + str(cost_power_lines) + '\n',
                                                                                                           ax=axes)
         nullNodes = {(0, 0): (0, 0)}
-        nx.draw_networkx_nodes(g, nullNodes, nullNodes.keys(), node_color='white', node_size=0, label='FC: ' + str(individual.goal_func))
+        nx.draw_networkx_nodes(g, nullNodes, nullNodes.keys(), node_color='white', node_size=0, label='FC: ' + str(individual.goal_func)
+                                                                                                             + '\nP: ' + str(params[0])
+                                                                                                             + '\nE: ' + str(params[1])
+                                                                                                             + '\nI: ' + str(params[2])
+                                                                                                             + '\nM: ' + str(params[3]),
+                                                                                                             ax=axes)
 
         for seg in individual.segments:
             if seg.conn_to_powerstation is True:
@@ -67,7 +84,8 @@ class RaportGenerator:
         pyplot.ylabel('y')
         pyplot.title('Najlepszy osobnik')
         handles, labels = axes.get_legend_handles_labels()
-        legend = axes.legend(handles, labels, loc='upper center', ncol=3, bbox_to_anchor=(0.5,-0.1))
+        legend = axes.legend(handles, labels, loc='upper center', ncol=3, bbox_to_anchor=(0.5, -0.1))
         legend.get_frame().set_alpha(0.5)
-        pyplot.savefig(raport_out_dir + "/" + filename + '_' + datetime.datetime.today().strftime(self.format) + '_best.png', bbox_extra_artists=(legend,), bbox_inches='tight')
-        pyplot.gcf().clear()
+        pyplot.savefig(raport_out_dir + "/" + filename + '_' + datetime.datetime.today().strftime(self.format) + '_best.png',
+                       bbox_extra_artists=(legend,), bbox_inches='tight')
+        pyplot.close(figure)
