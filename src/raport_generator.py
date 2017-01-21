@@ -39,7 +39,7 @@ class RaportGenerator:
                                                                                                           + 'KE: ' + str(cost_power_lines) + '\n',
                                                                                                           ax=axes)
         nullNodes = {(0, 0): (0, 0)}
-        nx.draw_networkx_nodes(g, nullNodes, nullNodes.keys(), node_color='white', node_size=0, label='FC: ' + str(format(individual.goal_func, '.5f')))
+        nx.draw_networkx_nodes(g, nullNodes, nullNodes.keys(), node_color='white', node_size=0, label='FC: ' + str(individual.goal_func))
 
         for seg in individual.segments:
             if seg.conn_to_powerstation is True:

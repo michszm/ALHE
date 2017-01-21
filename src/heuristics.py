@@ -158,6 +158,7 @@ class Heuristics:
         for indiv in individuals:
             if uniform(0.0, 1.0) < self.mut_prob:
                 indiv.mutate()
+                indiv.count_goal_func(self.cost_traction, self.cost_power_lines)
 
         return individuals
 

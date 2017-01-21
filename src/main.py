@@ -25,4 +25,4 @@ for test in test_files:
 
     for arg in args:
         heur_alg = Heuristics(cities_coord, powers_coord, arg[0], arg[0], arg[0] - arg[1], arg[2], arg[3], arg[4], arg[5])
-        heur_alg.run_heuristics(raport_out_dir, test[0][:6])
+        heur_alg.run_heuristics(raport_out_dir, test[2][:6])
