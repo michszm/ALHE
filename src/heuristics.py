@@ -135,7 +135,8 @@ class Heuristics:
     def crossover(self, individuals):
         iter = self.members_to_discard
         cross_list = []
-        to_crossover = self.generate_pairs(individuals)
+        shuffle(individuals)
+        to_crossover = individuals
 
         for i in range(iter):
             indiv1 = to_crossover[2 * i]
@@ -183,21 +184,6 @@ class Heuristics:
                                  reverse=True)
             self.is_population_sorted = True
         return self.population[rank]
-
-    def generate_pairs(self, individuals):
-        pair_list = []
-        num = 2 * self.members_to_discard
-        to_add = len(individuals)
-
-        while(num > 0):
-            num -= to_add
-            if num < 0:
-                to_add += num
-            shuffle(individuals)
-            pair_list += individuals[0:to_add]
-
-        return pair_list
-
 
     def merge_parents(self, indiv1, indiv2):
         seg_len = len(indiv1.segments)

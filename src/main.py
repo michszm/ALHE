@@ -36,7 +36,7 @@ for test in test_files:
         print "Run test with arguments: " + str(arg[0]) + ", " + str(arg[0] - arg[1]) + ", " \
               + str(arg[2]) + ", " + str(arg[3]) + ", " + str(arg[4]) + ", " + str(arg[5]) + "\n"
 
-        heur_alg = Heuristics(cities_coord, powers_coord, arg[0], arg[0], arg[0] - arg[1], arg[2], arg[3], arg[4], arg[5])
+        heur_alg = Heuristics(cities_coord, powers_coord, arg[0], 2*(arg[0] - arg[1]), arg[0] - arg[1], arg[2], arg[3], arg[4], arg[5])
         result = heur_alg.run_heuristics(raport_out_dir, test[2][:6])
         results.append(result)
 
