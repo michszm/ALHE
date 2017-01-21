@@ -1,7 +1,3 @@
-# Przykladowy 1
-#TC_001_cities_loc.txt; TC_001_power_loc.txt; TC_001_in_args.txt
-# Przykladowy 2
-#TC_002_cities_loc.txt; TC_002_power_loc.txt; TC_002_in_args.txt
 # Losowy 1
 #TC_003_cities_loc.txt; TC_003_power_loc.txt; TC_003_in_args.txt
 # Losowy 2
@@ -14,9 +10,13 @@
 #TC_007_cities_loc.txt; TC_007_power_loc.txt; TC_007_in_args.txt
 # Skupiskowy 2
 #TC_008_cities_loc.txt; TC_008_power_loc.txt; TC_008_in_args.txt
-# Przykladowy 3
-#TC_009_cities_loc.txt; TC_009_power_loc.txt; TC_009_in_args.txt
 # Krance 1
 #TC_010_cities_loc.txt; TC_010_power_loc.txt; TC_010_in_args.txt
 # Krance 2
 TC_011_cities_loc.txt; TC_011_power_loc.txt; TC_011_in_args.txt
+# Przykladowy 1
+#TC_001_cities_loc.txt; TC_001_power_loc.txt; TC_001_in_args.txt
+# Przykladowy 2
+#TC_002_cities_loc.txt; TC_002_power_loc.txt; TC_002_in_args.txt
+# Przykladowy 3
+#TC_009_cities_loc.txt; TC_009_power_loc.txt; TC_009_in_args.txt
