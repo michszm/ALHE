@@ -5,6 +5,7 @@
 from data_reader import DataReader
 from heuristics import Heuristics
 from raport_generator import RaportGenerator
+from math import floor
 import datetime
 import os
 
@@ -43,6 +44,7 @@ for test in test_files:
     # assumed that all pairs have the same params content
     params = results[0][1]
     size = params[2]
+    step = floor(size / 10)
 
     for result in results:
         for i, best_individual in enumerate(result[0]):
@@ -52,14 +54,16 @@ for test in test_files:
     avg_per_iteration = []
     max_per_iteration = []
 
-    for iteration in values_per_iteration.keys():
+    for i, iteration in enumerate(values_per_iteration.keys()):
         values = values_per_iteration[iteration]
-        avg = sum(values) / len(values)
-        min_per_iteration.append(avg - min(values))
-        avg_per_iteration.append(avg)
-        max_per_iteration.append(max(values) - avg)
+        avg_v = sum(values) / len(values)
+        min_v = 0 if not (i % step == 1) else avg_v - min(values)
+        max_v = 0 if not (i % step == 1) else max(values) - avg_v
+        min_per_iteration.append(min_v)
+        avg_per_iteration.append(avg_v)
+        max_per_iteration.append(max_v)
 
     data_per_iteration = [min_per_iteration, avg_per_iteration, max_per_iteration]
 
     report_gen = RaportGenerator()
-    report_gen.plot_average(size, data_per_iteration, raport_out_dir, 'Summary', params)
+    report_gen.plot_average(size, data_per_iteration, raport_out_dir, test[2][:6], params)
