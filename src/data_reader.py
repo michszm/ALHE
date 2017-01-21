@@ -29,7 +29,7 @@ class DataReader:
 
         for line in file:
             row = ("".join(line.split())).split(",")
-            args.append((int(row[0]), int(row[1]), int(row[2]), float(row[3]), float(row[4]), float(row[5])))
+            args.append((int(row[0]), int(row[1]), int(row[2]), float(row[3]), float(row[4]), float(row[5]), int(row[6])))
 
         file.close()
         return args
