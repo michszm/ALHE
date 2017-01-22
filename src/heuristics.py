@@ -38,18 +38,18 @@ class Heuristics:
 
         print ""
 
-        self.raport_gen.plot_iterations(self.iter_quantity,
-                                        best_individuals,
-                                        raport_out_dir,
-                                        filename, self.parameters)
-
-        self.raport_gen.print_best_individual(self.best_individual(),
-                                              self.cities_coords,
-                                              self.powers_coords,
-                                              self.cost_traction,
-                                              self.cost_power_lines,
-                                              raport_out_dir,
-                                              filename, self.parameters)
+        # self.raport_gen.plot_iterations(self.iter_quantity,
+        #                                 best_individuals,
+        #                                 raport_out_dir,
+        #                                 filename, self.parameters)
+        #
+        # self.raport_gen.print_best_individual(self.best_individual(),
+        #                                       self.cities_coords,
+        #                                       self.powers_coords,
+        #                                       self.cost_traction,
+        #                                       self.cost_power_lines,
+        #                                       raport_out_dir,
+        #                                       filename, self.parameters)
 
         print "\n++++++++++++++++++++++++++++++++++++++++++++++++\n"
 

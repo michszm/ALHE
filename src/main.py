@@ -29,9 +29,8 @@ for test in test_files:
     powers_coord = DataReader().read_locations(tests_file_path + test[1])
     args = DataReader().read_arguments(tests_file_path + test[2])
 
-    results = []
-
     for arg in args:
+        results = []
         for i in range(arg[6]):
             print "Start test case: " + test[2][:6]
             print "Run test with arguments: " + str(arg[0]) + ", " + str(arg[0] - arg[1]) + ", " \
@@ -41,30 +40,30 @@ for test in test_files:
             result = heur_alg.run_heuristics(raport_out_dir, test[2][:6])
             results.append(result)
 
-    values_per_iteration = {}
-    # assumed that all pairs have the same params content
-    params = results[0][1]
-    size = params[2]
-    step = floor(size / 10)
+        values_per_iteration = {}
+        # assumed that all pairs have the same params content
+        params = results[0][1]
+        size = params[2]
+        step = floor(size / 10)
 
-    for result in results:
-        for i, best_individual in enumerate(result[0]):
-            values_per_iteration.setdefault(i, []).append(best_individual)
+        for result in results:
+            for i, best_individual in enumerate(result[0]):
+                values_per_iteration.setdefault(i, []).append(best_individual)
 
-    min_per_iteration = []
-    avg_per_iteration = []
-    max_per_iteration = []
+        min_per_iteration = []
+        avg_per_iteration = []
+        max_per_iteration = []
 
-    for i, iteration in enumerate(values_per_iteration.keys()):
-        values = values_per_iteration[iteration]
-        avg_v = sum(values) / len(values)
-        min_v = 0 if not (i % step == 1) else avg_v - min(values)
-        max_v = 0 if not (i % step == 1) else max(values) - avg_v
-        min_per_iteration.append(min_v)
-        avg_per_iteration.append(avg_v)
-        max_per_iteration.append(max_v)
+        for i, iteration in enumerate(values_per_iteration.keys()):
+            values = values_per_iteration[iteration]
+            avg_v = sum(values) / len(values)
+            min_v = 0 if not (i % step == 1) else avg_v - min(values)
+            max_v = 0 if not (i % step == 1) else max(values) - avg_v
+            min_per_iteration.append(min_v)
+            avg_per_iteration.append(avg_v)
+            max_per_iteration.append(max_v)
 
-    data_per_iteration = [min_per_iteration, avg_per_iteration, max_per_iteration]
+        data_per_iteration = [min_per_iteration, avg_per_iteration, max_per_iteration]
 
-    report_gen = RaportGenerator()
-    report_gen.plot_average(size, data_per_iteration, raport_out_dir, test[2][:6], params)
+        report_gen = RaportGenerator()
+        report_gen.plot_average(size, data_per_iteration, raport_out_dir, test[2][:6], params)
